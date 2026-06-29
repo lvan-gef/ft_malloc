@@ -3,6 +3,8 @@ HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
 NAME := libft_malloc_$(HOSTTYPE).so
+LINK_NAME := libft_malloc.so
+
 MAKEFLAGS += -j
 
 LIBFT_DIR := libft
@@ -27,39 +29,31 @@ DEPSFLAGS := -MMD -MP
 R_CFLAGS  := -DNDEBUG -O3 -march=native -fomit-frame-pointer -fPIC -fstack-clash-protection
 R_LDFLAGS := -shared -Wl,-z,relro,-z,now
 
-SANITIZERS := -fsanitize=address,undefined,null,leak,integer-divide-by-zero,signed-integer-overflow
-D_CFLAGS   := -g3 -fno-omit-frame-pointer -fstack-protector-strong $(SANITIZERS)
-D_LDFLAGS  := $(SANITIZERS) -rdynamic
-
 SRC_DIR   := src
-SRC_FILES := main.c
+SRC_FILES := ft_free_list.c ft_malloc.c
 SRCS      := $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
 R_OBJ_DIR := obj
 R_OBJECTS := $(SRCS:$(SRC_DIR)/%.c=$(R_OBJ_DIR)/%.o)
 R_DEPS    := $(R_OBJECTS:.o=.d)
 
-D_OBJ_DIR := obj_debug
-D_OBJECTS := $(SRCS:$(SRC_DIR)/%.c=$(D_OBJ_DIR)/%.o)
-D_DEPS    := $(D_OBJECTS:.o=.d)
-
-BLUE := \033[36m
+BLUE     := \033[36m
 MARGENTA := \033[35m
-NC := \033[0m
+NC       := \033[0m
 
 .PHONY: all
-all: $(NAME)  ## Build release version (default)
+all: $(NAME) $(LINK_NAME)  ## Build release version (default)
 
 .PHONY: clean
 clean:  ## Clean object files
 	@$(MAKE) -C $(LIBFT_DIR) clean
-	@rm -rf $(R_OBJ_DIR) $(D_OBJ_DIR) $(B_OBJ_DIR) $(BD_OBJ_DIR)
+	@rm -rf $(R_OBJ_DIR) $(D_OBJ_DIR)
 
 .PHONY: fclean
 fclean:  ## Clean object, bin
 	@$(MAKE) clean
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@rm -f $(NAME) $(NAME_D) $(NAME_B) $(NAME_B_D)
+	@rm -f $(NAME) $(LINK_NAME)
 
 .PHONY: re
 re:  ## Clean all and recompile
@@ -92,5 +86,8 @@ $(LIBFT):
 
 $(R_OBJ_DIR):
 	@mkdir -p $@
+
+$(LINK_NAME): $(NAME)
+	ln -sf $(NAME) $(LINK_NAME)
 
 -include $(R_DEPS)

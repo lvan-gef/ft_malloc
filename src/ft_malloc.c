@@ -9,8 +9,9 @@
 
 static size_t get_page_size_(void);
 
-void *malloc(size_t size) {
+void *ft_malloc(size_t size) {
     ft_printf("Malloc: Not impl yet\n");
+    (void)get_page_size_();
 
     if (size <= TINY_MAX) {
         ft_printf("Search for TINY\n");
@@ -23,7 +24,7 @@ void *malloc(size_t size) {
     return NULL;
 }
 
-void *realloc(void *ptr, size_t size) {
+void *ft_realloc(void *ptr, size_t size) {
     ft_printf("Realloc: Not impl yet\n");
 
     (void)ptr;
@@ -32,7 +33,7 @@ void *realloc(void *ptr, size_t size) {
     return NULL;
 }
 
-void free(void *ptr) {
+void ft_free(void *ptr) {
     ft_printf("Free: Not impl yet\n");
     if (!ptr) {
         return;

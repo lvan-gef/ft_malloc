@@ -24,5 +24,6 @@ typedef struct fl_list_s {
 fl_list_t *fl_init(size_t size);
 void *fl_alloc(fl_list_t *fl, size_t size);
 void fl_free(fl_list_t *fl, void *ptr);
+void fl_destroy(fl_list_t *fl);
 
 #endif // !FT_FREE_LIST_H

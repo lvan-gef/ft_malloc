@@ -5,6 +5,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/mman.h>
+#include <unistd.h>
+
+#include "../libft/include/ft_fprintf.h"
 
 #define DEFAULT_ALIGN alignof(max_align_t)
 
@@ -105,6 +108,12 @@ void fl_free(fl_list_t *fl, void *ptr) {
     fl_node_insert_(&fl->head, prev_node, free_node);
     fl->used -= free_node->block_size;
     fl_coalescence_(fl, prev_node, free_node);
+}
+
+void fl_destroy(fl_list_t *fl) {
+    if (munmap(fl, fl->full_size) < 0) {
+        ft_fprintf(STDERR_FILENO, "failed to unmap the map\n");
+    }
 }
 
 static void fl_all_(fl_list_t *fl) {
